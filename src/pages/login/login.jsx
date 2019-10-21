@@ -6,7 +6,7 @@ import { Form, Icon, Input, Button } from 'antd'
 
 import logo from './logo.png'
 // import './login.less'
-import './login.css'
+import './login.less'
 
 const { Item } = Form // 必须在所有import的下面
 
@@ -126,13 +126,17 @@ class Login extends Component {
   }
 }
 
+/* 
+多行注释
+*/
+
 
 const LoginWrap = Form.create()(Login)
 
 export default LoginWrap
 
 /* 
-1. 高阶函数
+1. 高阶函数        11111111111111
   定义: 如果函数接收的参数是函数或者返回值是函数
   例子: Promise() / then() / 定时器 / 数组遍历相关方法 / bind() / $() / $.get() / Form.create()
   好处: 更加动态, 更加具有扩展性
