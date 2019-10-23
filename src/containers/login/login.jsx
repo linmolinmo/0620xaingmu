@@ -3,14 +3,18 @@
 */
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button } from 'antd'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
+import {loginAsync} from '../../redux/action-creators/user'
 
 import logo from './logo.png'
-// import './login.less'
 import './login.less'
+// import { from } from 'rxjs'
 
 const { Item } = Form // 必须在所有import的下面
 
 class Login extends Component {
+  
 
   handleSubmit = (event) => {
     event.preventDefault() // 阻止表单提交
@@ -19,6 +23,10 @@ class Login extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) { // 验证成功
         console.log('发ajax请求', values)
+        //const {username,password} = values  没写  
+        const {username,password} = values
+        this.props.loginAsync(username, password)
+
       } else {
         // 什么都不用写
       }
@@ -60,6 +68,11 @@ class Login extends Component {
   render() {
     console.log('Login render() ', this.props.form )
     const { getFieldDecorator } = this.props.form;
+    const {hasLogin} = this.props
+    if (hasLogin) {
+      return <Redirect to="/"/>
+      // 如果已经登录跳转页面
+    }
 
 
     return (
@@ -131,9 +144,15 @@ class Login extends Component {
 */
 
 
-const LoginWrap = Form.create()(Login)
+// const LoginWrap = Form.create()(Login)
 
-export default LoginWrap
+// export default LoginWrap
+export default connect(
+  state => ({hasLogin: state.user.hasLogin}),
+  {loginAsync}
+)
+
+(Form.create()(Login))
 
 /* 
 1. 高阶函数        11111111111111
