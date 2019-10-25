@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {Router, Switch, Route} from 'react-router-dom'
 
-import Login from './containers/login/login'
-import Admin from './containers/admin/admin'
+import Login from './containers/login'
+import Admin from './containers/admin'
+
+import history from './history'
 
 /*
 应用根组件
@@ -11,12 +13,12 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <Router history={history}>
         <Switch>
           <Route path='/login' component={Login}/>
           <Route path='/' component={Admin}/>
         </Switch>
-      </BrowserRouter>
+      </Router>
     )
   }
 }

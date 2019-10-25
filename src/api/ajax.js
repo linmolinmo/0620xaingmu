@@ -8,6 +8,12 @@
       如果失败返回携带msg的错误, 外部具体请求处理错误
   3).统一处理请求异常, 外部调用者不用再处理请求异常
   4). 请求过程中显示请求进度的效果
+    5). token验证处理
+      请求拦截器: 如果有token , 添加到请求头中: Authorization
+      响应拦截器失败的回调: 
+        如果status401, 清除用户数据, 自动跳转到跳转
+        如果当前已经在登陆界面, 不需要做处理
+
 */
 import axios from 'axios'
 import qs from 'qs'
@@ -16,6 +22,13 @@ import {
 } from 'antd'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+
+//store,用的话引入
+
+import store from '../redux/store'
+import {removeUserToken} from '../redux/action-creators/user'
+import history from '../history'
+
 
 // 创建一个instance
 // const instance = axios.create({
@@ -55,6 +68,13 @@ instance.interceptors.request.use((config) => {
         config.data = qs.stringify(data)
 
     }
+    //05,如果有token , 添加到请求头中: Authorization
+    const token = store.getState().user.token
+    if (token) {
+        config.headers['Authorization'] = 'atguigu_' + token
+    }
+
+
     return config //必须返回config
 
 
@@ -73,7 +93,23 @@ instance.interceptors.response.use(
 
         // 隐藏请求进度
         NProgress.done()
-        message.error('请求出错: '+error.message)
+
+        const {status,data: {msg}={}} = error.response
+        //如果status为401
+        if (status === 401) {
+            if (history.location.pathname !== '/login') {
+                console.log('===========')
+                message.error(msg)
+                store.dispatch(removeUserToken())
+            }
+            
+        }else if (status === 404) {
+            message.error('请求资源不存在')
+        }else{
+            message.error('请求出错: ' + error.message)        
+        }
+
+        // message.error('请求出错: '+error.message)
         //中断promise链子 
         return new Promise(() => {})
 

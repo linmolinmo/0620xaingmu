@@ -8,10 +8,28 @@ import {Redirect} from 'react-router-dom'
 import {loginAsync} from '../../redux/action-creators/user'
 
 import logo from './logo.png'
-import './login.less'
+import './index.less'
+
+import WithCheckLogin from '../with-check-login'
+
 // import { from } from 'rxjs'
 
 const { Item } = Form // 必须在所有import的下面
+
+// @connect(
+//   state => ({}),
+//   {loginAsync}
+// )
+// @Form.create()
+// @WithCheckLogin
+
+@connect(
+  state => ({}),  // 用于显示的一般属性
+  {loginAsync} // 用于更新状态的函数属性
+)
+@Form.create()    // FormLogin = Form.create()(CheckLogin)
+@WithCheckLogin  // CheckLogin = WithCheckLogin(Login)
+
 
 class Login extends Component {
   
@@ -68,11 +86,13 @@ class Login extends Component {
   render() {
     console.log('Login render() ', this.props.form )
     const { getFieldDecorator } = this.props.form;
-    const {hasLogin} = this.props
-    if (hasLogin) {
-      return <Redirect to="/"/>
-      // 如果已经登录跳转页面
-    }
+
+    // 这块自定义高阶组件,就不用写这个了
+    // const {hasLogin} = this.props
+    // if (hasLogin) {
+    //   return <Redirect to="/"/>
+    //   // 如果已经登录跳转页面
+    // }
 
 
     return (
@@ -147,12 +167,9 @@ class Login extends Component {
 // const LoginWrap = Form.create()(Login)
 
 // export default LoginWrap
-export default connect(
-  state => ({hasLogin: state.user.hasLogin}),
-  {loginAsync}
-)
+export default Login
 
-(Form.create()(Login))
+
 
 /* 
 1. 高阶函数        11111111111111
